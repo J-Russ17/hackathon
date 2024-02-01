@@ -10,7 +10,7 @@ export default function Header() {
       <AppBar position="static" sx={{ backgroundColor: "orange" }}>
         <Toolbar variant="dense">
           <Typography variant="h6" color="inherit" component="div">
-            CJN
+            CJN News
           </Typography>
         </Toolbar>
       </AppBar>
