@@ -4,7 +4,9 @@ function ArticleCard(props) {
   const { article } = props;
   return (
     <div>
-      <p> {article.title}</p>
+      <a href={article.url}>
+        <h3> {article.title}</h3>
+      </a>
       <p>{article.author}</p>
     </div>
   );
