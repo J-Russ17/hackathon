@@ -31,8 +31,8 @@ function SearchFilters({ onFilterChange }) {
         <span className="SearchFilters_filterContainer">
           <span className="SearchFilters_text">for </span>
           <select onChange={onFilterChange} name="timeRange">
-            <option value="All time">All time</option>
             <option value="Last 24h">Last 24h</option>
+            <option value="All time">All time</option>
             <option value="Past Week">Past Week</option>
             <option value="Past Month">Past Month</option>
             <option value="Past Year">Past Year</option>
