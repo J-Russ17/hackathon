@@ -1,5 +1,4 @@
-import React from 'react'
-
+import React from 'react';
 
 function Highlight({ text, highlight }) {
   if (!highlight.trim()) {
@@ -16,30 +15,28 @@ function Highlight({ text, highlight }) {
   );
 }
 
-function DisplayArticleCard({ title, url, ...props }) {
-
-  const removez = props.created.replace("A", "");
-  const removetime = removez.substr(0, 10);
-  const formattedDate = new Date(removetime.replace("T", " "));
+function DisplayArticleCard({ title, url, searchTerm, points, author, created, comments, storyID }) {
+  // Simplified date calculation
+  const formattedDate = new Date(created);
   const currentDate = new Date();
   const diffTime = Math.abs(currentDate - formattedDate);
   const diffYears = diffTime / (1000 * 60 * 60 * 24 * 365);
   const yearsAgo = Math.floor(diffYears);
 
-  const commentURL = 'https://news.ycombinator.com/item?id=' + props.storyID;
-  const authorURL = 'https://news.ycombinator.com/user?id=' + props.author;
+  const commentURL = `https://news.ycombinator.com/item?id=${storyID}`;
+  const authorURL = `https://news.ycombinator.com/user?id=${author}`;
 
   return (
-    <li className="articles"> 
+    <li className="articles">
       <a href={url} target="_blank" rel="noopener noreferrer">
-        <Highlight text={title} highlight={props.searchTerm} />
+        <Highlight text={title} highlight={searchTerm} />
       </a>
-      <a href={props.url} target="_blank" className="titleURL"> ({props.url})</a>
+      <span className="titleURL"> (<a href={url} target="_blank" rel="noopener noreferrer">{url}</a>)</span>
       <br />
-      <a href={commentURL} target="_self" className="info">{props.points} points | </a>
-      <a href={authorURL} target="_self" className="info"> {props.author} | </a>
-      <span className="info"> {yearsAgo} years ago | </span>
-      <a href={commentURL} target="_self" className="info"> {props.comments} comments</a>
+      <a href={commentURL} target="_self" className="articleInfo">{points} points | </a>
+      <a href={authorURL} target="_self" className="articleInfo">{author} | </a>
+      <span className="articleInfo">{yearsAgo} years ago | </span>
+      <a href={commentURL} target="_self" className="articleInfo">{comments} comments</a>
     </li>
   );
 }
