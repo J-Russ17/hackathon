@@ -1,64 +1,58 @@
-import React, { useEffect, useState } from "react";
-import FilterSearch from "./components/SearchForm";
-import ListArticles from "./components/ListArticles";
-import Header from "./components/Header";
-import axios from "axios";
+import React from 'react';
+import './App.css';
+import SearchHeader from './SearchHeader';
+import SearchFilters from './SearchFilters';
+import SearchResults from './SearchResults';
 
-const App = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [articles, setArticles] = useState([]);
-  const [categories, setCategories] = useState("title");
-  console.log(searchTerm);
+export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      text: '',
+      ListArticles: [],
+    };
+    this.handleChange = this.handleChange.bind(this);
+    this.debouncedSearch = this.debounce(this.handleSearch.bind(this), 300);
+  }
 
-  const fetchStory = async () => {
-    try {
-      const response = await axios.get(
-        `http://hn.algolia.com/api/v1/search?query=${searchTerm}&tags=story`
-      );
-      console.log(response.data.hits);
-      setArticles(response.data.hits);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  componentDidMount() {
+    this.handleSearch();
+  }
 
-  const fetchAuthor = async () => {
-    try {
-      const response = await axios.get(
-        `http://hn.algolia.com/api/v1/search?tags=story,author_${searchTerm}`
-      );
-      console.log(response.data.hits);
-      setArticles(response.data.hits);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  debounce(func, delay) {
+    let inDebounce;
+    return function () {
+      const context = this;
+      const args = arguments;
+      clearTimeout(inDebounce);
+      inDebounce = setTimeout(() => func.apply(context, args), delay);
+    };
+  }
 
-  useEffect(() => {
-    if (categories === "title") {
-      fetchStory();
-    } else if (categories === "author") {
-      fetchAuthor();
-    }
-  }, [searchTerm, categories]);
-  console.log(articles);
-  console.log("categories", categories);
+  handleSearch() {
+    fetch(`https://hn.algolia.com/api/v1/search?query=${this.state.text}&tags=story`)
+      .then(response => response.json())
+      .then(data => {
+        this.setState({ ListArticles: data.hits });
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }
 
-  return (
-    <>
-      <Header />
-      <FilterSearch
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        categories={categories}
-        setCategories={setCategories}
-      />
-      <div>
-        <h1></h1>
-        <ListArticles articles={articles} />
+  handleChange(event) {
+    this.setState({ text: event.target.value }, () => {
+      this.debouncedSearch();
+    });
+  }
+
+  render() {
+    return (
+      <div className='container'>
+        <SearchHeader onSearchChange={this.handleChange} onSearchKeyUp={this.handleSearch} />
+        <SearchFilters />
+        <SearchResults articles={this.state.ListArticles} searchTerm={this.state.text} />
       </div>
-    </>
-  );
-};
-
-export default App;
+    );
+  }
+}
