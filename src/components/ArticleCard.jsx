@@ -3,8 +3,10 @@ import React from "react";
 function ArticleCard(props) {
   const { article } = props;
   return (
-    <div>
-      <p> {article.title}</p>
+    <div className="articleCards">
+      <a href={article.url}>
+        <h3> {article.title}</h3>
+      </a>
       <p>{article.author}</p>
     </div>
   );
